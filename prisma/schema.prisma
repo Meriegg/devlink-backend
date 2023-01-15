@@ -11,14 +11,20 @@ datasource db {
 }
 
 model User {
-  id                  String    @id @default(cuid())
-  username            String    @unique
-  email               String    @unique
+  id                  String         @id @default(cuid())
+  username            String         @unique
+  email               String         @unique
   password            String
   country             String?
   githubAccountLink   String?
   programmingLanguage String?
-  sessions            Session[] @relation("UserSession")
+  sessions            Session[]      @relation("UserSession")
+  posts               Post[]         @relation("UserPost")
+  comments            Comment[]      @relation("UserComment")
+  likedPosts          Post[]
+  likedComments       Comment[]
+  commentReplies      CommentReply[] @relation("UserCommentReplies")
+  commentReplyLikes   CommentReply[]
 
   @@map("user")
 }
@@ -32,4 +38,50 @@ model Session {
   expirationDate DateTime
 
   @@map("session")
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  code        String?
+  textContent String?
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
+  likes       User[]
+  user        User      @relation(fields: [userId], references: [id], name: "UserPost")
+  comments    Comment[] @relation("PostComment")
+
+  @@map("post")
+}
+
+model Comment {
+  id        String         @id @default(cuid())
+  content   String
+  postId    String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime?
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], name: "UserComment")
+  post      Post           @relation(fields: [postId], references: [id], name: "PostComment")
+  likes     User[]
+  replies   CommentReply[] @relation("CommentReply")
+
+  @@map("comment")
+}
+
+model CommentReply {
+  id            String         @id @default(cuid())
+  content       String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime?
+  userId        String
+  commentId     String
+  toId          String?
+  to            CommentReply?  @relation(fields: [toId], references: [id], name: "RepliesGotten")
+  comment       Comment        @relation(fields: [commentId], references: [id], name: "CommentReply")
+  user          User           @relation(fields: [userId], references: [id], name: "UserCommentReplies")
+  likes         User[]
+  repliesGotten CommentReply[] @relation("RepliesGotten")
+
+  @@map("commentReply")
 }

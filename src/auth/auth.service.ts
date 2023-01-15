@@ -28,7 +28,6 @@ export class AuthService {
 
     // Sign the session id so that it can be securely sent to the client
     const { privateKey, publicKey } = this.cryptoService.generateKeyPair();
-    console.log(privateKey, publicKey);
     const { signature } = this.cryptoService.createSignedString(sessionId, {
       privateKey,
       publicKey,

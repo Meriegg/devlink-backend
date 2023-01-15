@@ -17,8 +17,6 @@ export class CryptoService {
   private encryptionAlgorithm: string;
   private cipherAlgorithm: string;
 
-  public generateKeyPairs() {}
-
   public createHMACString(data: string) {
     const HMAC = createHmac(
       this.encryptionAlgorithm,
@@ -35,6 +33,7 @@ export class CryptoService {
   }
 
   public generateKeyPair() {
+    // Taken from NodeJs documentation examples
     const { publicKey, privateKey } = generateKeyPairSync('rsa', {
       modulusLength: 4096,
       publicKeyEncoding: {

@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto';
 import { AuthGuard } from './guards/auth.guard';
 import { Auth, AuthSession } from './decorators/auth.decorator';
+import { Get } from '@nestjs/common/decorators';
 
 @Controller('/auth')
 export class AuthController {
